@@ -1,0 +1,53 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Index</title>
+    @*<script type="text/javascript"
+            src="http://qzonestyle.gtimg.cn/qzone/openapi/qc_loader.js" data-appid="101823433" data-redirecturi="http://smileworld.tech/qq" charset="utf-8"></script>*@
+</head>
+<body>
+    <span id="qqLoginBtn"></span>
+    <script type="text/javascript">
+        //var cbLoginFun = function (oInfo, opts) {
+        //    //根据返回数据，更换按钮显示状态方法
+        //    var dom = document.getElementById(opts['btnId']),
+        //        _logoutTemplate = [
+        //            //头像
+        //            '<span><img src="{figureurl}" class="{size_key}"/></span>',
+        //            //昵称
+        //            '<span>{nickname}</span>',
+        //            //退出
+        //            '<span><a href="javascript:QC.Login.signOut();">退出</a></span>'
+        //        ].join("");
+
+        //    dom && (dom.innerHTML = QC.String.format(_logoutTemplate, {
+        //        nickname: QC.String.escHTML(oInfo.nickname),
+        //        figureurl: oInfo.figureurl
+        //    }));
+        //};
+
+        //QC.Login({
+        //    //btnId：插入按钮的节点id，必选
+        //    btnId: "qqLoginBtn",
+        //    //用户需要确认的scope授权项，可选，默认all
+        //    scope: "all",
+        //    //按钮尺寸，可用值[A_XL| A_L| A_M| A_S|  B_M| B_S| C_S]，可选，默认B_S
+        //    size: "A_XL"
+        //}, cbLoginFun, function (opts) {//注销成功
+        //    alert('QQ登录 注销成功');
+        //});
+        if (window.location.search.length===0) {
+             var url = escape('http://smileworld.tech/qq');
+             location.href = "https://graph.qq.com/oauth2.0/authorize?response_type=code&client_id=101823433&scope=get_user_info&redirect_uri=" + url;
+        }
+       
+    </script>
+</body>
+</html>
