@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Text;
@@ -6,12 +7,14 @@ using System.Threading.Tasks;
 
 namespace DB
 {
-    public class Database : IDatabase
+    public class Database : IDatabase,IDisposable
     {
+        private readonly ILogger<Database> _log;
         private readonly IDbConnection _dbConnection;
-
-        public Database(IDbConnection dbConnection)
+        private bool _disposed;
+        public Database(IDbConnection dbConnection,ILogger<Database> log)
         {
+            _log = log;
             _dbConnection = dbConnection;
         }
         public async Task<TEntity> UseDbConnectionAsync<TEntity>(Func<IDbConnection, Task<TEntity>> func)
@@ -23,7 +26,7 @@ namespace DB
             }
             catch (Exception e)
             {
-                
+                _log.LogError(e.Message,e);
             }
             return default(TEntity);
         }
@@ -45,11 +48,27 @@ namespace DB
                 catch (Exception e)
                 {
                     transaction.Rollback();
-                    
+                    _log.LogError(e.Message, e);
                 }
             }
             return b;
         }
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!_disposed)
+            {
+                if (disposing)
+                {
+                    _dbConnection?.Dispose();
+                }
+            }
+            _disposed = true;
+        }
 
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
     }
 }
