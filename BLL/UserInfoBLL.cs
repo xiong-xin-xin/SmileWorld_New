@@ -1,9 +1,11 @@
 ﻿using DAL;
 using System;
 using System.Threading.Tasks;
+using Util;
 
 namespace BLL
 {
+   
     public class UserInfoBLL: IUserInfoBLL
     {
         private IUserInfoDAL _dal;
@@ -11,6 +13,7 @@ namespace BLL
         {
             _dal = dal;
         }
+      
         public async Task GetUserInfoAsync()
         {
            await _dal.GetUserInfoAsync();

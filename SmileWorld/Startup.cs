@@ -1,18 +1,23 @@
-﻿using DB;
+﻿using AspectCore.Configuration;
+using AspectCore.Extensions.DependencyInjection;
+using DB;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
+using StackExchange.Redis.Extensions.Core;
+using StackExchange.Redis.Extensions.Core.Abstractions;
+using StackExchange.Redis.Extensions.Core.Configuration;
+using StackExchange.Redis.Extensions.Core.Implementations;
+using StackExchange.Redis.Extensions.System.Text.Json;
 using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Reflection;
-using System.Threading.Tasks;
+using Util;
 
 namespace SmileWorld
 {
@@ -25,18 +30,35 @@ namespace SmileWorld
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
-        public void ConfigureServices(IServiceCollection services)
+        // 此方法由运行时调用。使用此方法将服务添加到容器。
+        public IServiceProvider ConfigureServices(IServiceCollection services)
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
-            services.AddScoped<IDbConnection>(x => new SqlConnection(Configuration["ConnectionString:BaseDb"]));
+
+            services.AddSingleton(Configuration);
+            services.AddScoped<IDbConnection>(x => new SqlConnection(Configuration["ConnectionStrings:BaseDb"]));
             services.AddScoped<IDatabase, Database>();
+
+            var redisConfiguration = Configuration.GetSection("Redis").Get<RedisConfiguration>();
+            services.AddSingleton(redisConfiguration);
+            services.AddSingleton<IRedisCacheClient, RedisCacheClient>();
+            services.AddSingleton<IRedisCacheConnectionPoolManager, RedisCacheConnectionPoolManager>();
+            services.AddSingleton<IRedisDefaultCacheClient, RedisDefaultCacheClient>();
+            services.AddSingleton<ISerializer, SystemTextJsonSerializer>();
 
             services.RegisterAssemblyTypes(Assembly.Load("BLL"), "BLL");
             services.RegisterAssemblyTypes(Assembly.Load("DAL"), "DAL");
+            //根据属性注入来配置全局拦截器
+            services.ConfigureDynamicProxy(config =>
+            {
+                ServiceProvider provider = services.BuildServiceProvider();
+                //拦截代理所有BLL结尾的类
+                config.Interceptors.AddTyped<ToolRedisCacheAOP>(new object[] { provider.GetService<IRedisCacheClient>() }, Predicates.ForService("*BLL"));
+            });
+            return services.BuildDynamicProxyServiceProvider();
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        // 此方法由运行时调用。使用此方法配置HTTP请求管道。
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
             if (env.IsDevelopment())
@@ -53,7 +75,7 @@ namespace SmileWorld
     }
     public static class StartupUtil
     {
-        public static void RegisterAssemblyTypes(this IServiceCollection serviceCollection, Assembly assembly,string endWith)
+        public static void RegisterAssemblyTypes(this IServiceCollection serviceCollection, Assembly assembly, string endWith)
         {
             var types = assembly.GetTypes().Where(x => x.IsClass && !x.IsAbstract);
             if (!string.IsNullOrEmpty(endWith))

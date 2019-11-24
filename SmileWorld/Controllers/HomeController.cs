@@ -50,7 +50,7 @@ namespace SmileWorld.Controllers
             //    var userInfo = await $"{qq_base_url}/user/get_user_info?access_token={nameValue["access_token"]}&oauth_consumer_key={client_id}&openid={open_id}".GetAsync().ReceiveJson<QQUserInfo>();
             //}
 
-
+            await Task.Delay(100);
             return View("Index");
         }
         public class QQUserInfo
