@@ -27,6 +27,7 @@ namespace DB
             catch (Exception e)
             {
                 _log.LogError(e.Message,e);
+                throw e;
             }
             return default(TEntity);
         }
@@ -49,6 +50,7 @@ namespace DB
                 {
                     transaction.Rollback();
                     _log.LogError(e.Message, e);
+                    throw e;
                 }
             }
             return b;

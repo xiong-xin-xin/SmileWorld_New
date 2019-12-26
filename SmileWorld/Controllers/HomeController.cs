@@ -12,27 +12,29 @@ using System.Threading.Tasks;
 
 namespace SmileWorld.Controllers
 {
+    [Route("test")]
+    [ApiExplorerSettings(GroupName = "api")]
     public class HomeController : Controller
     {
         string qq_base_url = "https://graph.qq.com";
         string client_id = "101823433";
         string appkey = "ecb2d9a91bba8becabef6dd576659570";
 
-        private readonly IUserInfoBLL _userInfoBLL;
+        private readonly IUserBLL _userInfoBLL;
         private readonly ILogger<HomeController> _log;
-        public HomeController(IUserInfoBLL userInfoBLL, ILogger<HomeController> log)
+        public HomeController(IUserBLL userInfoBLL, ILogger<HomeController> log)
         {
             _log = log;
-            _userInfoBLL = userInfoBLL;
+           _userInfoBLL = userInfoBLL;
         }
-
+        [HttpGet]
         public async Task<IActionResult> Index()
         {
             _log.LogDebug("xxxxxxxxxxxxxxxxxx");
-            await _userInfoBLL.GetUserInfoAsync();
+            //await _userInfoBLL.GetUserInfoAsync();
             return View();
         }
-        [Route("qq")]
+        [HttpGet("qq")]
         public async Task<IActionResult> QQ(string code)
         {
             //获取access_token

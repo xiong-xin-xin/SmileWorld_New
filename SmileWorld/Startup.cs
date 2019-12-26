@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using SmileWorld.Common;
+using SmileWorld.Common.Filter;
 using StackExchange.Redis.Extensions.Core;
 using StackExchange.Redis.Extensions.Core.Abstractions;
 using StackExchange.Redis.Extensions.Core.Configuration;
@@ -33,7 +35,9 @@ namespace SmileWorld
         // 此方法由运行时调用。使用此方法将服务添加到容器。
         public IServiceProvider ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services.AddMvc(o=>{
+                o.Filters.Add(typeof(GlobalExceptionsFilter));
+            }).SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
             services.AddSingleton(Configuration);
             services.AddScoped<IDbConnection>(x => new SqlConnection(Configuration["ConnectionStrings:BaseDb"]));
@@ -46,8 +50,8 @@ namespace SmileWorld
             services.AddSingleton<IRedisDefaultCacheClient, RedisDefaultCacheClient>();
             services.AddSingleton<ISerializer, SystemTextJsonSerializer>();
 
-            services.RegisterAssemblyTypes(Assembly.Load("BLL"), "BLL");
             services.RegisterAssemblyTypes(Assembly.Load("DAL"), "DAL");
+            services.RegisterAssemblyTypes(Assembly.Load("BLL"), "BLL");
             //根据属性注入来配置全局拦截器
             services.ConfigureDynamicProxy(config =>
             {
@@ -55,6 +59,31 @@ namespace SmileWorld
                 //拦截代理所有BLL结尾的类
                 config.Interceptors.AddTyped<ToolRedisCacheAOP>(new object[] { provider.GetService<IRedisCacheClient>() }, Predicates.ForService("*BLL"));
             });
+            services.AddSwagger();
+
+            services.AddCors(c =>
+            {
+                //全开放式跨域
+                c.AddPolicy("AllRequests", policy =>
+                {
+                    policy
+                    .AllowAnyOrigin()//允许任何源
+                    .AllowAnyMethod()//允许任何方式
+                    .AllowAnyHeader()//允许任何头
+                    .AllowCredentials();//允许cookie
+                });
+
+                c.AddPolicy("LimitRequests", policy =>
+                {
+                    policy
+                    .WithOrigins("http://localhost:8080", "http://172.20.63.173:8080")//支持多个域名端口，注意端口号后不要带/斜杆
+                    .AllowAnyHeader()//Ensures that the policy allows any header.
+                    .AllowCredentials()
+                    .AllowAnyMethod();
+                });
+            });
+            services.AddJwt(Configuration);
+
             return services.BuildDynamicProxyServiceProvider();
         }
 
@@ -65,6 +94,32 @@ namespace SmileWorld
             {
                 app.UseDeveloperExceptionPage();
             }
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+            {
+                new string[] { "api", "admin" }.ToList().ForEach(version =>
+                {
+                    c.SwaggerEndpoint($"/swagger/{version}/swagger.json", version);
+                });
+            });
+
+            app.UseAuthentication();
+
+            if (env.IsDevelopment())
+            {
+                app.UseCors("AllRequests");
+            }
+            else
+            {
+                app.UseCors("LimitRequests");
+            }
+
+            //设置默认页
+            app.UseDefaultFiles();
+            // 使用静态文件
+            app.UseStaticFiles();
+            // 返回错误码
+            app.UseStatusCodePages();
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
@@ -73,30 +128,5 @@ namespace SmileWorld
             });
         }
     }
-    public static class StartupUtil
-    {
-        public static void RegisterAssemblyTypes(this IServiceCollection serviceCollection, Assembly assembly, string endWith)
-        {
-            var types = assembly.GetTypes().Where(x => x.IsClass && !x.IsAbstract);
-            if (!string.IsNullOrEmpty(endWith))
-            {
-                types = types.Where(x => x.Name.EndsWith(endWith));
-            }
-            var interfaces = assembly.GetTypes().Where(w => w.IsInterface);
-            if (!string.IsNullOrEmpty(endWith))
-            {
-                interfaces = interfaces.Where(x => x.Name.EndsWith(endWith));
-            }
-            var interfaceArray = interfaces as Type[] ?? interfaces.ToArray();
-            foreach (var type in types)
-            {
-                var interfaceType = interfaceArray.FirstOrDefault(w => w.IsAssignableFrom(type));
-                if (interfaceType != null)
-                {
-                    serviceCollection.AddScoped(interfaceType, type);
-                }
-            }
-        }
-
-    }
+  
 }

@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BLL
+namespace DAL
 {
-    public interface IUserInfoBLL
+    public interface IUserDAL : IBaseDao
     {
-        Task GetUserInfoAsync();
+        Task GetUserAsync();
     }
 }

@@ -8,14 +8,10 @@ using Util;
 
 namespace DAL
 {
-    public class UserInfoDAL: IUserInfoDAL
+    public class UserDAL: BaseDao, IUserDAL
     {
-        private IDatabase  _database;
-        public UserInfoDAL(IDatabase database)
-        {
-            _database = database;
-        }
-        public async Task GetUserInfoAsync()
+        public UserDAL(IDatabase database) : base(database) { }
+        public async Task GetUserAsync()
         {
             string sql = "select * from LR_Base_User";
             var a =await _database.UseDbConnectionAsync(t=>t.QueryAsync<dynamic>(sql));

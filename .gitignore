@@ -260,3 +260,5 @@ paket-files/
 __pycache__/
 *.pyc
 /SmileWorld/Logs
+/SmileWorld/SmileWorld.xml
+/Model/Model.xml
