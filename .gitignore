@@ -262,3 +262,5 @@ __pycache__/
 /SmileWorld/Logs
 /SmileWorld/SmileWorld.xml
 /Model/Model.xml
+/smileworld-web/node_modules
+/smileworld-web/dist/test

@@ -34,6 +34,7 @@ namespace SmileWorld
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
+             .UseUrls("http://*:8085")
              .UseStartup<Startup>()
              .UseSerilog();
 

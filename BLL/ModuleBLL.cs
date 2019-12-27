@@ -15,6 +15,10 @@ namespace BLL
             _moduleDAL = moduleDAL;
 
         }
+        public Task<List<Module>> GetUserModule(string userId)
+        {
+            return _moduleDAL.GetUserModuleAsync(userId);
+        }
         public Task<List<ModuleButton>> GetUserModuleButtons(string userId)
         {
             return _moduleDAL.GetUserModuleButtonsAsync(userId);

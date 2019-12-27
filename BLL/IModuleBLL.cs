@@ -8,6 +8,8 @@ namespace BLL
 {
     public interface IModuleBLL
     {
+        Task<List<Module>> GetUserModule(string userId);
         Task<List<ModuleButton>> GetUserModuleButtons(string userId);
+
     }
 }

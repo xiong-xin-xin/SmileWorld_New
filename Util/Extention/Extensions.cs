@@ -14,7 +14,7 @@ using System.Text;
 namespace Util
 {
 
-    public static partial class Extensions
+    public static partial class Extention
     {
         /// <summary>
         /// 利用反射来判断对象是否包含某个属性

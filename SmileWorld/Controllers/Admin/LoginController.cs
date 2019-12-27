@@ -11,10 +11,11 @@ using System.Threading.Tasks;
 
 namespace SmileWorld.Controllers.Admin
 {
-    [Route("api/[controller]")]
-    [ApiExplorerSettings(GroupName = "admin")]
-    [ApiController]
-    public class LoginController : ControllerBase
+   
+    /// <summary>
+    /// 登陆控制器
+    /// </summary>
+    public class LoginController : BaseController
     {
         private readonly IUserBLL _userBLL;
         private readonly IModuleBLL  _moduleBLL;

@@ -97,7 +97,7 @@ namespace SmileWorld
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {
-                new string[] { "api", "admin" }.ToList().ForEach(version =>
+                new string[] { "admin", "api"  }.ToList().ForEach(version =>
                 {
                     c.SwaggerEndpoint($"/swagger/{version}/swagger.json", version);
                 });

@@ -8,6 +8,7 @@ namespace DAL
 {
    public interface IModuleDAL: IBaseDao
     {
+        Task<List<Module>> GetUserModuleAsync(string userId);
         Task<List<ModuleButton>> GetUserModuleButtonsAsync(string userId);
 
     }
