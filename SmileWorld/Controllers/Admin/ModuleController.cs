@@ -25,7 +25,7 @@ namespace SmileWorld.Controllers.Admin
         /// <summary>
         /// 获取用户菜单列表
         /// </summary>
-        [HttpGet("getusermodulelist")]
+        [HttpGet]
         public async Task<object> GetUserModuleList()
         {
             var userid = this.User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier).Value;

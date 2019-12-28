@@ -1,4 +1,5 @@
 ﻿using DAL;
+using Model;
 using Model.Admin;
 using System;
 using System.Collections.Generic;
@@ -17,6 +18,12 @@ namespace BLL
         {
             _dal = dal;
         }
+
+        public Task<ResponeInfo> GetUserPageList(Pagination pagination, string name)
+        {
+           return _dal.GetUserPageListAsync(pagination, name);
+        }
+
         public async Task<(User, List<Role>)> GetUserRoleNameStr(string loginName, string loginPWD)
         {
             var roles = new List<Role>();

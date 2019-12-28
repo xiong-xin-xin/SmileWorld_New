@@ -60,7 +60,9 @@ ax.interceptors.response.use(response => {
       store.commit('MENU_RESET') // 重置菜单
       window.location.reload()
     } else {
-      store.commit('RES_ERROR', response) // 响应错误数据
+      if (env === 'development' || env === 'test') {
+        store.commit('RES_ERROR', response) // 响应错误数据
+      }
     }
   }
   console.log(message)

@@ -4,7 +4,7 @@ const baseAPI = {
   development: 'http://development.xx.com/api',
   test: 'http://localhost:8085/admin',
   release: 'http://172.20.222.47:8888/api',
-  production: 'api'
+  production: 'admin'
 }
 const env = localStorage.getItem('env') || process.env.VUE_APP_ENV
 const baseURL = localStorage.getItem('newBaseAPI') || baseAPI[env]

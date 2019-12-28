@@ -9,6 +9,11 @@ namespace Model
     /// </summary>
     public class ResponeInfo
     {
+        public ResponeInfo(object data)
+        {
+            this.data = data;
+        }
+
         /// <summary>
         /// 返回数据
         /// </summary>
@@ -22,5 +27,11 @@ namespace Model
         /// </summary>
         public int code { get; set; } = 0;
 
+    }
+
+    public class ResponePageData
+    {
+        public object data { get; set; }
+        public int total { get; set; }
     }
 }

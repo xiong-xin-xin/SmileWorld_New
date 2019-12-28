@@ -14,7 +14,7 @@ namespace SmileWorld.Controllers
     /// <summary>
     /// 基类
     /// </summary>
-    [Route("admin/[controller]")]
+    [Route("admin/[controller]/[action]")]
     [ApiExplorerSettings(GroupName = "admin")]
     [ApiController]
     public class BaseController : ControllerBase
