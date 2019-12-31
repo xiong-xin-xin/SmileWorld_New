@@ -1,8 +1,11 @@
-﻿using AspectCore.Configuration;
+﻿
+using AspectCore.Configuration;
 using AspectCore.Extensions.DependencyInjection;
+using DAL;
 using DB;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -42,6 +45,7 @@ namespace SmileWorld
             services.AddSingleton(Configuration);
             services.AddScoped<IDbConnection>(x => new SqlConnection(Configuration["ConnectionStrings:BaseDb"]));
             services.AddScoped<IDatabase, Database>();
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
             var redisConfiguration = Configuration.GetSection("Redis").Get<RedisConfiguration>();
             services.AddSingleton(redisConfiguration);

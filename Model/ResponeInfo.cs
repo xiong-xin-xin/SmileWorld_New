@@ -13,7 +13,6 @@ namespace Model
         {
             this.data = data;
         }
-
         /// <summary>
         /// 返回数据
         /// </summary>
@@ -26,12 +25,17 @@ namespace Model
         /// 0正确 -1错误
         /// </summary>
         public int code { get; set; } = 0;
-
+        
     }
 
-    public class ResponePageData
+   
+
+
+    public class PageData
     {
         public object data { get; set; }
         public int total { get; set; }
     }
+
+
 }

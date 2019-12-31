@@ -24,7 +24,10 @@ namespace Model.Admin
             UpdatedDate = DateTime.Now;
             LastLoginTime = DateTime.Now;
         }
-      
+        /// <summary>
+        /// 主键ID
+        /// </summary>
+        public string Id { get; set; }
         /// <summary>
         /// 登录账号
         /// </summary>
@@ -56,7 +59,7 @@ namespace Model.Admin
         /// <summary>
         ///最后登录时间 
         /// </summary>
-        public DateTime LastLoginTime { get; set; }
+        public DateTime? LastLoginTime { get; set; }
 
         public virtual string[] Roles { get; set; }
 

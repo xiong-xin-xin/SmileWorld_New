@@ -40,8 +40,7 @@ namespace SmileWorld.Controllers.Admin
         /// <param name="password">密码</param>
         /// <returns></returns>
         [HttpGet]
-        [Route("Token")]
-        public async Task<object> JWTToken(string username, string password)
+        public async Task<object> Token(string username, string password)
         {
             string jwtStr = string.Empty;
 

@@ -1,4 +1,6 @@
 ﻿using Model;
+using Model.Admin;
+using Model.Dtos;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -8,7 +10,7 @@ namespace DAL
 {
     public interface IUserDAL : IBaseDao
     {
-        Task<ResponeInfo> GetUserPageListAsync(Pagination pagination, string name);
+        Task<PageData> GetUserPageListAsync(Pagination pagination, string name);
         Task GetUserAsync();
     }
 }

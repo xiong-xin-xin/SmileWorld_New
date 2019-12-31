@@ -14,10 +14,6 @@ namespace Model.Dtos
         /// </summary>
         public string LoginName { get; set; }
         /// <summary>
-        /// 登录密码
-        /// </summary>
-        public string LoginPWD { get; set; }
-        /// <summary>
         /// 真实姓名
         /// </summary>
         public string RealName { get; set; }
@@ -48,5 +44,8 @@ namespace Model.Dtos
         //[JsonIgnore]
         //[IgnoreDataMember]
         public List<UserRole> UserRoles { get; set; }
+
+
+        public virtual string[] Roles { get; set; }
     }
 }

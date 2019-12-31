@@ -7,16 +7,17 @@ using System.Threading.Tasks;
 
 namespace DB
 {
-    public class Database : IDatabase,IDisposable
+    public class Database : IDatabase
     {
         private readonly ILogger<Database> _log;
         private readonly IDbConnection _dbConnection;
         private bool _disposed;
-        public Database(IDbConnection dbConnection,ILogger<Database> log)
+        public Database(IDbConnection dbConnection, ILogger<Database> log)
         {
             _log = log;
             _dbConnection = dbConnection;
         }
+
         public async Task<TEntity> UseDbConnectionAsync<TEntity>(Func<IDbConnection, Task<TEntity>> func)
         {
             try
@@ -26,8 +27,8 @@ namespace DB
             }
             catch (Exception e)
             {
-                _log.LogError(e.Message,e);
-                throw e;
+                _log.LogError(e.Message, e);
+               // throw e;
             }
             return default(TEntity);
         }
@@ -50,7 +51,7 @@ namespace DB
                 {
                     transaction.Rollback();
                     _log.LogError(e.Message, e);
-                    throw e;
+                    //throw e;
                 }
             }
             return b;

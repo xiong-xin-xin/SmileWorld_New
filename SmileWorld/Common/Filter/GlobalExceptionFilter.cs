@@ -56,7 +56,7 @@ namespace SmileWorld.Common.Filter
     {
         public InternalServerErrorObjectResult(object value) : base(value)
         {
-            StatusCode = StatusCodes.Status200OK;
+            StatusCode = StatusCodes.Status500InternalServerError;
         }
     }
 }

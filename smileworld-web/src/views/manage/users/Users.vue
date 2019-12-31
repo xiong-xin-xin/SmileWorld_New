@@ -11,7 +11,8 @@
         <Button type="error" @click="handleBatchDelete" :disabled="!toolbar.number" icon="md-trash">删除</Button>
       </div>
       <!-- .toolbar -->
-      <ITable ref="list" stripe :columns="columns" :loading="list.loading" :data="list.data" :total="list.total" @on-page-change="handleDataList" @on-selection-change="handleSelectionChange" />
+      <ITable ref="list" stripe :columns="columns" :loading="list.loading" :data="list.data" :total="list.total"
+        @on-page-change="handleDataList" @on-selection-change="handleSelectionChange" />
       <!-- ITable -->
       <UserEdit ref="edit" :model="edit" @on-update="handleDataList" />
       <!-- UserEdit -->
@@ -41,7 +42,7 @@ export default {
         gender: 1,
         roles: [],
         status: 1,
-        remark: "",
+        remark: ""
       },
       // 初始表单数据(用户)
       init: "",
@@ -70,22 +71,36 @@ export default {
         { title: "登陆名", key: "loginName", minWidth: 120 },
         { title: "用户名", key: "realName", minWidth: 120 },
         { title: "年龄", key: "age", minWidth: 80 },
-        {          title: "性别", key: "gender", minWidth: 80,
+        {
+          title: "性别",
+          key: "gender",
+          minWidth: 80,
           render: (h, params) =>
             h("span", params.row.gender === 1 ? "男" : "女")
         },
-        {          title: '状态', minWidth: 100, key: 'status',
+        {
+          title: "状态",
+          minWidth: 100,
+          key: "status",
           render: (h, params) => {
-            return h('span',
+            return h(
+              "span",
               {
-                style: { color: params.row.status == 1 ? 'green' : 'red' }
-              }, params.row.status == 1 ? '正常' : '锁定中')
+                style: { color: params.row.status == 1 ? "green" : "red" }
+              },
+              params.row.status == 1 ? "正常" : "锁定中"
+            );
           },
           sortable: true
         },
         { title: "备注", key: "remark", minWidth: 100 },
         { title: "最后登陆时间", key: "lastLoginTime", minWidth: 120 },
-        {          title: "Operation", key: "operation", align: "center", fixed: "right", minWidth: 150,
+        {
+          title: "Operation",
+          key: "operation",
+          align: "center",
+          fixed: "right",
+          minWidth: 150,
           render: (h, params) =>
             h("div", [
               h(
@@ -171,27 +186,27 @@ export default {
       let that = this;
       this.$Modal.confirm({
         title: "提示",
-        content: '此操作为不可逆操作，是否确认删除？',
+        content: "此操作为不可逆操作，是否确认删除？",
         width: 400,
         loading: true,
         onOk() {
           that.$Loading.start();
           that.list.loading = true;
           delUser({
-            'ids': that.toolbar.ids.join(',')
+            ids: that.toolbar.ids.join(",")
           }).then(res => {
             let { data, msg, code } = res;
             if (code === 0) {
-              that.$Message.success('OK');
+              that.$Message.success("OK");
               that.handleDataList();
             } else {
               that.$Loading.error();
               that.list.loading = false;
             }
-          })
+          });
           this.remove();
         }
-      })
+      });
     },
     /**
      * 删除用户

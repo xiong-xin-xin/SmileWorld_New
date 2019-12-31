@@ -2,9 +2,11 @@
 using DB;
 using Model;
 using Model.Admin;
+using Model.Dtos;
 using System;
 using System.Collections.Generic;
 using System.Dynamic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Util;
@@ -20,7 +22,7 @@ namespace DAL
             var a = await _database.UseDbConnectionAsync(t => t.QueryAsync<dynamic>(sql));
         }
 
-        public async Task<ResponeInfo> GetUserPageListAsync(Pagination pagination, string name)
+        public async Task<PageData> GetUserPageListAsync(Pagination pagination, string name)
         {
             pagination.sql = "select * from base_User";
             if (!string.IsNullOrWhiteSpace(name))
@@ -28,11 +30,21 @@ namespace DAL
                 pagination.sql += " where LoginName=@name ";
                 pagination.where = new { name };
             }
-            ResponePageData data = new ResponePageData();
-            data.data = await GetPageListAsync<User>(pagination);
-            data.total = pagination.records;
+            var user = await GetPageListAsync<UserOutputDto>(pagination);
 
-            return new ResponeInfo(data);
+            var userRoles = await GetAllListAsync<UserRole>(new { UserId = user.AsList().Select(t => t.Id) });
+            foreach (var item in user)
+            {
+                item.UserRoles = userRoles.Where(t => t.UserId == item.Id).ToList();
+            }
+
+            PageData data = new PageData
+            {
+                data = user,
+                total = pagination.records
+            };
+
+            return data;
         }
     }
 }
