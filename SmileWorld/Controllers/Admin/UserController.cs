@@ -38,13 +38,20 @@ namespace SmileWorld.Controllers.Admin
 
         /// <summary>
         /// 修改用户
-        /// </summary>
+        /// </summary>-
         /// <returns></returns>
         [HttpPost]
         public async Task<AjaxResult> EditUser([FromForm]User user)
         {
-            return  await _userBLL.EditUserAsync(user);
-
+            return await _userBLL.EditUserAsync(user);
+        }
+        /// <summary>
+        /// 删除用户
+        /// </summary>
+        [HttpPost]
+        public async Task<AjaxResult> DelUser([FromForm]string ids)
+        {
+            return await _userBLL.DelUserAsync(ids);
         }
     }
 }

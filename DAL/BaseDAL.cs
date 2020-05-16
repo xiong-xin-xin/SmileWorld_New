@@ -172,11 +172,18 @@ namespace DAL
         {
             string tableName = GetTableName<T>();
             List<string> col = new List<string>();
+            string[] defaultIgnore = new string[] { "CreatedDate", "CreatedBy", "CreatedId" };
             foreach (var item in model.GetType().GetProperties())
             {
                 if (item.GetMethod.IsVirtual || item.PropertyType.IsGenericType) continue;
                 if (item.Name.Equals("Id", StringComparison.OrdinalIgnoreCase)) continue;
-                if (ignoreColumns.Contains(item.Name, StringComparer.OrdinalIgnoreCase)) continue;
+                if (ignoreColumns != null && ignoreColumns.Contains(item.Name, StringComparer.OrdinalIgnoreCase)) continue;
+
+                if (defaultIgnore.Contains(item.Name, StringComparer.OrdinalIgnoreCase))
+                {
+                    continue;
+                }
+
                 if (updateColumns != null)
                 {
                     if (updateColumns.Contains(item.Name, StringComparer.OrdinalIgnoreCase))

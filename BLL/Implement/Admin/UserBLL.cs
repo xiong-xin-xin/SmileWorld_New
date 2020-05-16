@@ -72,12 +72,25 @@ namespace BLL
                 {
                     await _dal.DeleteAsync<UserRole>("UserId", user.Id, tran);
                     await _dal.AddAsync(userRoles, tran);
-                    await _dal.EditAsync(user, new string[] { "LoginPWD", "CreatedDate", "CreatedBy", "CreatedId" }, tran);
+                    await _dal.EditAsync(user, new string[] { "LoginPWD" }, tran);
                 });
 
                 return Success("修改成功");
             }
 
+        }
+
+        public async Task<AjaxResult> DelUserAsync(string ids)
+        {
+            var res = await _dal.DeleteAsync<User>(ids);
+            if (res > 0)
+            {
+                return Success("删除成功");
+            }
+            else
+            {
+                return Success("删除失败");
+            }
         }
 
         public async Task<(User, List<Role>)> GetUserRoleNameStr(string loginName, string loginPWD)

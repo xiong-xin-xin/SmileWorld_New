@@ -5,6 +5,10 @@ using System.Threading.Tasks;
 using BLL;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Model;
+using Model.Admin;
+using Util;
+using static BLL.BaseBLL;
 
 namespace SmileWorld.Controllers.Admin
 {
@@ -22,14 +26,32 @@ namespace SmileWorld.Controllers.Admin
             _roleBLL = roleBLL;
         }
         /// <summary>
-        /// 获取角色列表-key-value
+        /// 获取角色列表
         /// </summary>
         [HttpGet]
-        public async Task<object> GetRoleList()
+        public async Task<object> GetRolePageList(string pagination, string name)
         {
-            var data = await _roleBLL.GetRoleList();
-
+            Pagination paginationobj = pagination.ToObject<Pagination>();
+            var data = await _roleBLL.GetRolePageList(paginationobj, name);
             return Success(data);
+        }
+
+        /// <summary>
+        /// 修改角色
+        /// </summary>-
+        /// <returns></returns>
+        [HttpPost]
+        public async Task<AjaxResult> EditRole([FromForm]Role role)
+        {
+            return await _roleBLL.EditRoleAsync(role);
+        }
+        /// <summary>
+        /// 删除角色
+        /// </summary>
+        [HttpPost]
+        public async Task<AjaxResult> DelUser([FromForm]string ids)
+        {
+            return await _roleBLL.DelRoleAsync(ids);
         }
     }
 }

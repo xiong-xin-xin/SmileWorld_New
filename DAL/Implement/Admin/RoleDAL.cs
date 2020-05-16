@@ -1,4 +1,5 @@
 ﻿using DB;
+using Model;
 using Model.Admin;
 using System;
 using System.Collections.Generic;
@@ -11,14 +12,24 @@ namespace DAL
     public class RoleDAL : BaseDao, IRoleDAL
     {
         public RoleDAL(IDatabase database) : base(database) { }
-        public async Task<object> GetRoleListAsync()
+        public async Task<PageData> GetRolePageListAsync(Pagination pagination, string name)
         {
-            var data = await GetAllListAsync<Role>();
-            return data.ToList().Select(f => new
+            pagination.sql = "select * from base_role";
+            if (!string.IsNullOrWhiteSpace(name))
             {
-                value = f.Id,
-                label = f.Name
-            });
+                pagination.sql += " where name=@name ";
+                pagination.where = new { name };
+            }
+            pagination.sidx = "ordersort";
+            pagination.sord = "asc";
+            var roleList = await GetPageListAsync<Role>(pagination);
+
+            var data = new PageData
+            {
+                data = roleList,
+                total = pagination.records
+            };
+            return data;
         }
     }
 }

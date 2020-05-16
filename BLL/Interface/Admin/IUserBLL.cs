@@ -12,6 +12,7 @@ namespace BLL
     {
         Task<PageData> GetUserPageList(Pagination pagination, string name);
         Task<AjaxResult> EditUserAsync(User user);
+        Task<AjaxResult> DelUserAsync(string ids);
         Task<User> SaveUserInfo(string loginName, string loginPWD);
         Task<(User, List<Role>)> GetUserRoleNameStr(string loginName, string loginPWD);
     }

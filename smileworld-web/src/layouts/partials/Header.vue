@@ -141,6 +141,7 @@ export default {
   }
   & .sub {
     font-size: 12px;
+    line-height: 1;
   }
   & .navigation {
     cursor: pointer;
