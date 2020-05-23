@@ -82,7 +82,7 @@ namespace BLL
 
         public async Task<AjaxResult> DelUserAsync(string ids)
         {
-            var res = await _dal.DeleteAsync<User>(ids);
+            var res = await _dal.DeleteByIdAsync<User>(ids);
             if (res > 0)
             {
                 return Success("删除成功");

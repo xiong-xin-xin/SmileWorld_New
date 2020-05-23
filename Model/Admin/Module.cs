@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 
 namespace Model.Admin
@@ -7,6 +8,7 @@ namespace Model.Admin
     /// <summary>
     /// 模块功能表
     /// </summary>
+    [Table("base_module")]
     public class Module : BaseModel
     {
       //  public Module()

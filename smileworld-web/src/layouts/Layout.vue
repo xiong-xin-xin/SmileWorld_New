@@ -3,21 +3,11 @@
     <IHeader />
     <!-- IHeader -->
     <Row>
-      <Col
-        :xs="0"
-        :sm="0"
-        :md="4"
-        :lg="3"
-      >
+      <Col :xs="0" :sm="0" :md="4" :lg="3">
       <ISidebar ref="sidebar" />
       <!-- ISidebar -->
       </Col>
-      <Col
-        :xs="24"
-        :sm="24"
-        :md="20"
-        :lg="21"
-      >
+      <Col :xs="24" :sm="24" :md="20" :lg="21">
       <ITabs />
       <!-- ITabs -->
       <div id="container">
@@ -50,9 +40,14 @@ import IFooter from "@/layouts/partials/Footer";
 import IError from "@/layouts/partials/Error";
 import { mapGetters } from "vuex";
 import store from "@/store";
-import { startConnection, signOut, forceSignOut, setOnlineNumber } from '@/utils/signalr'
-import { get } from '@/utils/axios'
-import { setTimeout } from 'timers';
+import {
+  startConnection,
+  signOut,
+  forceSignOut,
+  setOnlineNumber
+} from "@/utils/signalr";
+import { get } from "@/utils/axios";
+import { setTimeout } from "timers";
 //store.dispatch("handleMenu");
 export default {
   name: "ILayout",
@@ -92,29 +87,29 @@ export default {
     this.handleKeepAlive();
     //提醒另一个用户已登录
     if (this.connection !== "") this.connection.stop();
-    signOut.method = (message) => {
+    signOut.method = message => {
       this.$Modal.confirm({
-        title: '提示',
+        title: "提示",
         content: message,
         onOk: () => {
-          this.connection.invoke('ForceSignOut');
+          this.connection.invoke("ForceSignOut");
         },
         onCancel: () => {
-          store.commit('MENU_RESET') // 重置菜单
-          window.location.reload()
+          store.commit("MENU_RESET"); // 重置菜单
+          window.location.reload();
         }
-      })
-    }
+      });
+    };
     forceSignOut.method = () => {
-      store.commit('MENU_RESET')
-      window.location.reload()
-    }
-    setOnlineNumber.method = (number) => {
+      store.commit("MENU_RESET");
+      window.location.reload();
+    };
+    setOnlineNumber.method = number => {
       console.log(`当前在线人数：${number}`);
-    }
-    if (process.env.VUE_APP_ENV !== 'development') {
+    };
+    if (process.env.VUE_APP_ENV !== "development") {
       this.connection = await startConnection();
-      this.connection.invoke("SignIn")
+      this.connection.invoke("SignIn");
     }
   },
   methods: {
@@ -133,11 +128,11 @@ export default {
       }
     }
   }
-}
+};
 </script>
 <style lang="postcss">
 .ivu-modal-body {
-  max-height: 550px !important;
+  max-height: 800px !important;
   overflow: auto !important;
 }
 

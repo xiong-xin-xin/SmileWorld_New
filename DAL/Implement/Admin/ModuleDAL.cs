@@ -1,5 +1,6 @@
 ﻿using Dapper;
 using DB;
+using Model;
 using Model.Admin;
 using System;
 using System.Collections.Generic;
@@ -12,6 +13,20 @@ namespace DAL
     public class ModuleDAL : BaseDao, IModuleDAL
     {
         public ModuleDAL(IDatabase database) : base(database) { }
+
+        public async Task<IEnumerable<Module>> GetModulePageListAsync(Pagination pagination, string title)
+        {
+            pagination.sql = "select * from base_module";
+            if (!string.IsNullOrWhiteSpace(title))
+            {
+                pagination.sql += " where title=@title ";
+                pagination.where = new { title };
+            }
+            pagination.sidx = "ordersort";
+            pagination.sord = "asc";
+           return await GetPageListAsync<Module>(pagination);
+        }
+
         public async Task<List<Module>> GetUserModuleAsync(string userId)
         {
             string sql = @"select distinct a.* from base_module a                            join base_authorize b on a.id =b.itemid  

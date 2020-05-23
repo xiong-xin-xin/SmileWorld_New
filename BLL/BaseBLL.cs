@@ -4,7 +4,7 @@ using System.Text;
 
 namespace BLL
 {
-    public class BaseBLL
+    public  class BaseBLL
     {
 
         public class AjaxResult

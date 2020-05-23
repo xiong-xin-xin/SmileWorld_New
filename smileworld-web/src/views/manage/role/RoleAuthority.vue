@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Modal v-model="modal.visible" :title="id" footer-hide>
+    <Modal v-model="modal.visible" title="权限设置" footer-hide>
       <Form :loading="loading.form" :btn-loading="loading.btn" :width="600" :label-width="70">
         <FormItem label="权限集：">
           <Tree ref="tree" :data="formItem.permissions" show-checkbox check-strictly check-directly multiple></Tree>
@@ -27,10 +27,10 @@ export default {
         btn: false
       },
       formItem: {
-        name: '',
+        name: "",
         permissions: []
       }
-    }
+    };
   },
   props: {
     id: String
@@ -45,7 +45,7 @@ export default {
     handleData() {
       getRoleAuthList({ roleId: this.id }).then(res => {
         this.formItem.permissions = res.data;
-      })
+      });
     },
     handleSubmit() {
       this.$Loading.start();
@@ -54,17 +54,19 @@ export default {
       var data = { roleId: this.id, authLists: [] };
       authList.forEach(item => {
         data.authLists.push({ ItemId: item.id, itemType: item.isMenu });
-      })
-      saveRoleAuth(data).then(res => {
-        this.$Message.success(res.msg);
-        this.$Loading.finish();
-      }).catch(() => {
-        this.$Loading.error();
       });
+      saveRoleAuth(data)
+        .then(res => {
+          this.$Message.success(res.msg);
+          this.$Loading.finish();
+        })
+        .catch(() => {
+          this.$Loading.error();
+        });
       this.loading.btn = false;
       this.modal.visible = false;
     }
   }
-}
+};
 </script>
 

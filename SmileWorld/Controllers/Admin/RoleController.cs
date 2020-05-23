@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Model;
 using Model.Admin;
+using Model.Dtos;
 using Util;
 using static BLL.BaseBLL;
 
@@ -52,6 +53,26 @@ namespace SmileWorld.Controllers.Admin
         public async Task<AjaxResult> DelUser([FromForm]string ids)
         {
             return await _roleBLL.DelRoleAsync(ids);
+        }
+
+        /// <summary>
+        /// 获取当前角色的权限
+        /// </summary>
+        [HttpGet]
+        public async Task<object> GetRoleAuthList(string roleId)
+        {
+            var data = await _roleBLL.GetRoleAuthListAsync(roleId);
+
+            return Success(data);
+        }
+
+        /// <summary>
+        /// 保存角色权限
+        /// </summary>
+        [HttpPost]
+        public async Task<AjaxResult> SaveRoleAuth([FromForm]RoleAuthInputDto roleAuthInputDto)
+        {
+            return await _roleBLL.SaveRoleAuth(roleAuthInputDto);
         }
     }
 }

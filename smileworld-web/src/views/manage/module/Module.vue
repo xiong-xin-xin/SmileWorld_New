@@ -22,7 +22,10 @@
             </Tooltip>
             </Col>
           </Row>
-          <zk-table ref="table" sum-text="sum" index-text="#" :data="datas" :columns="columns" :stripe="props.stripe" :border="props.border" :show-header="props.showHeader" :show-summary="props.showSummary" :show-row-hover="props.showRowHover" :show-index="props.showIndex" :tree-type="props.treeType" :is-fold="props.isFold" :expand-type="props.expandType" :selection-type="props.selectionType">
+          <zk-table ref="table" sum-text="sum" index-text="#" :data="datas" :columns="columns" :stripe="props.stripe"
+            :border="props.border" :show-header="props.showHeader" :show-summary="props.showSummary"
+            :show-row-hover="props.showRowHover" :show-index="props.showIndex" :tree-type="props.treeType"
+            :is-fold="!props.isFold" :expand-type="props.expandType" :selection-type="props.selectionType">
             <template slot="type" slot-scope="scope">
               <span v-if="scope.row.isMenu===1">
                 <Icon type="md-apps"></Icon>&nbsp;菜单
@@ -43,8 +46,10 @@
             </template>
             <template slot="action" slot-scope="scope">
               <Button type="primary" @click="openAddModal(2,scope.row)" size="small">编辑</Button>
-              <Button type="success" @click="openAddModal(3,scope.row)" size="small">添加下级</Button>
-              <Button type="error" @click="removeModalOpen(scope.row.id)" size="small">删除</Button>
+              <Button type="success" @click="openAddModal(3,scope.row)" size="small"
+                style="margin-left: 5px;">添加下级</Button>
+              <Button type="error" @click="removeModalOpen(scope.row.id)" size="small"
+                style="margin-left: 5px;">删除</Button>
             </template>
           </zk-table>
         </template>
@@ -67,10 +72,9 @@
 </template>
 <script>
 import { delModule, getModuleList } from "@/services/manage/module";
-import { delModuleButton } from "@/services/manage/modulebutton";
 import ModuleEdit from "./ModuleEdit";
 export default {
-  name: 'Module',
+  name: "Module",
   components: { ModuleEdit },
   data() {
     return {
@@ -89,24 +93,49 @@ export default {
         treeType: true,
         isFold: true,
         expandType: false,
-        selectionType: false,
+        selectionType: false
       },
       datas: [],
       columns: [
-        { label: '资源名称', prop: 'title', width: '200px', },
-        { label: '类型', prop: 'isMenu', type: 'template', template: 'type', width: '80px' },
-        { label: '资源链接', prop: 'path', width: '250px' },
-        { label: 'Name', prop: 'name', width: '150px' },
-        { label: 'Api', prop: 'api', width: '150px' },
-        { label: '状态', prop: 'enabled', type: 'template', template: 'enabled', width: '77px' },
-        { label: '图标', prop: 'icon', type: 'template', template: 'icon', width: '80px' },
-        { label: '排序', prop: 'orderSort', width: '50px' },
-        { label: '说明', prop: 'description' },
-        { label: '操作', type: 'template', prop: 'action', template: 'action', width: '180px', fixed: "right", }
+        { label: "资源名称", prop: "title", width: "200px" },
+        {
+          label: "类型",
+          prop: "isMenu",
+          type: "template",
+          template: "type",
+          width: "80px"
+        },
+        { label: "资源链接", prop: "path", width: "250px" },
+        { label: "Name", prop: "name", width: "150px" },
+        { label: "Api", prop: "api", width: "150px" },
+        {
+          label: "状态",
+          prop: "enabled",
+          type: "template",
+          template: "enabled",
+          width: "77px"
+        },
+        {
+          label: "图标",
+          prop: "icon",
+          type: "template",
+          template: "icon",
+          width: "80px"
+        },
+        { label: "排序", prop: "orderSort", width: "50px" },
+        { label: "说明", prop: "description" },
+        {
+          label: "操作",
+          type: "template",
+          prop: "action",
+          template: "action",
+          width: "300px",
+          fixed: "right"
+        }
       ],
       edit: {},
       removeObject: null
-    }
+    };
   },
   created() {
     this.getData();
@@ -122,9 +151,9 @@ export default {
         }
       }).then(res => {
         this.setting.loading = false;
-        const { data, total } = res.data;
-        this.datas = data
-      })
+        const { data } = res.data;
+        this.datas = data;
+      });
     },
     removeModalOpen(id) {
       this.removeModal = true;
@@ -135,19 +164,21 @@ export default {
       this.$Message.loading({
         content: "资源删除中...",
         duration: 0
-      })
+      });
       delModule({
         ids: [this.removeObject]
-      }).then(res => {
-        this.getData(false)
-        this.$Message.destroy()
-        this.$Message.success({
-          content: "资源删除成功",
-          duration: 1.5
+      })
+        .then(() => {
+          this.getData(false);
+          this.$Message.destroy();
+          this.$Message.success({
+            content: "资源删除成功",
+            duration: 1.5
+          });
+        })
+        .catch(() => {
+          this.$Loading.error();
         });
-      }).catch(() => {
-        this.$Loading.error();
-      });
       this.setting.loading = false;
       this.removeModal = false;
     },
@@ -156,12 +187,13 @@ export default {
       this.edit = { enabled: 1, parentId: 0 };
       if (type == 2) {
         this.edit = { ...row };
-      } else if (type == 3) {//添加下级按钮
+      } else if (type == 3) {
+        //添加下级按钮
         this.edit = {
           enabled: 1,
           isMenu: 2,
           parentName: row.title,
-          id: '',
+          id: "",
           parentId: row.id,
           name: row.name,
           orderSort: 1
@@ -169,7 +201,7 @@ export default {
       }
     }
   }
-}
+};
 </script>
 <style>
 .zk-table__header-wrapper {

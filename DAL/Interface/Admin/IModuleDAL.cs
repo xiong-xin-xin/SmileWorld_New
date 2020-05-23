@@ -1,4 +1,5 @@
-﻿using Model.Admin;
+﻿using Model;
+using Model.Admin;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -10,6 +11,8 @@ namespace DAL
     {
         Task<List<Module>> GetUserModuleAsync(string userId);
         Task<List<ModuleButton>> GetUserModuleButtonsAsync(string userId);
+
+        Task<IEnumerable<Module>> GetModulePageListAsync(Pagination pagination, string title);
 
     }
 }

@@ -1,7 +1,8 @@
 <template>
   <div id="module-edit">
     <Modal v-model="modal.visible" :title="modal.title" footer-hide>
-      <Form ref="form" :rules="rules" :loading="loading.form" :btn-loading="loading.btn" :width="600" :model="model" :label-width="80" @keyup.enter.native="handleSubmit('form')">
+      <Form ref="form" :rules="rules" :loading="loading.form" :btn-loading="loading.btn" :width="600" :model="model"
+        :label-width="80" @keyup.enter.native="handleSubmit('form')">
         <FormItem hidden label="ID">
           <Input :value="model.id"></Input>
         </FormItem>
@@ -13,7 +14,8 @@
         </FormItem>
         <FormItem label="类型">
           <Select v-model.trim="model.isMenu" style="width:100%">
-            <Option v-for="item in [{label:'菜单',value:1},{label:'按钮',value:2}]" :value="item.value" :key="item.value">{{ item.label }}</Option>
+            <Option v-for="item in [{label:'菜单',value:1},{label:'按钮',value:2}]" :value="item.value" :key="item.value">
+              {{ item.label }}</Option>
           </Select>
         </FormItem>
         <FormItem label="Url" prop="path">
@@ -80,7 +82,7 @@ export default {
             trigger: "blur"
           }
         ]
-      },
+      }
     };
   },
   methods: {
@@ -105,7 +107,7 @@ export default {
       this.$Loading.start();
       this.loading.btn = true;
       const payload = this.model;
-      this.$refs['form'].validate(valid => {
+      this.$refs["form"].validate(valid => {
         if (valid) {
           editModule(payload)
             .then(res => {
@@ -121,8 +123,7 @@ export default {
               this.modal.visible = false;
             });
         }
-      })
-
+      });
     }
   }
 };

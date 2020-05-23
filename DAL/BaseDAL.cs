@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Data;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
@@ -91,14 +92,14 @@ namespace DAL
         /// <summary>
         /// 删除
         /// </summary>
-        public Task<int> DeleteAsync<T>(string vue, IDbTransaction tran = null) where T : class, new()
+        public Task<int> DeleteByIdAsync<T>(string vue, IDbTransaction tran = null) where T : class, new()
         {
             string tableName = GetTableName<T>();
 
             string sql = $"delete from {tableName} where Id in @Id";
             if (tran != null)
             {
-                return tran.Connection.ExecuteAsync(sql, new { vulueof = vue.Split(',') }, tran);
+                return tran.Connection.ExecuteAsync(sql, new { Id = vue.Split(',') }, tran);
             }
             return _database.UseDbConnectionAsync(t => t.ExecuteAsync(sql, new { Id = vue.Split(',') }));
         }
@@ -115,6 +116,33 @@ namespace DAL
                 return tran.Connection.ExecuteAsync(sql, parameters, tran);
             }
             return _database.UseDbConnectionAsync(t => t.ExecuteAsync(sql, parameters));
+        }
+
+        public Task<int> DeleteAsync<T>(object where, IDbTransaction tran = null) where T : class, new()
+        {
+            string tableName = GetTableName<T>();
+
+            string sql = $"delete from {tableName}";
+            if (where != null)
+            {
+                sql += " where 1=1 ";
+                foreach (PropertyInfo propertyInfo in where.GetType().GetProperties())
+                {
+                    if (propertyInfo.PropertyType.IsArray || propertyInfo.PropertyType.IsGenericType)
+                    {
+                        sql += $" and {propertyInfo.Name} in @{propertyInfo.Name}";
+                    }
+                    else
+                    {
+                        sql += $" and {propertyInfo.Name} = @{propertyInfo.Name}";
+                    }
+                }
+            }
+            if (tran != null)
+            {
+                return tran.Connection.ExecuteAsync(sql, where, tran);
+            }
+            return _database.UseDbConnectionAsync(t => t.ExecuteAsync(sql, where));
         }
 
         /// <summary>
